@@ -509,6 +509,7 @@ textarea.form-control{resize:vertical;min-height:70px;}
    <div id="at-2" style="display:none">
     <div class="form-row"><div class="form-group"><label class="form-label">N° Compte bancaire</label><input class="form-control" id="a-banque"></div><div class="form-group"><label class="form-label">Diplôme le plus élevé</label><input class="form-control" id="a-diplome"></div></div>
     <div class="form-group"><label class="form-label">Spécialité / Domaine</label><input class="form-control" id="a-specialite"></div>
+    <div class="form-group"><label class="form-label">Nominations</label><textarea class="form-control" id="a-nomi" rows="3"></textarea></div>
     <div class="form-group"><label class="form-label">Observations</label><textarea class="form-control" id="a-obs" rows="3"></textarea></div>
    </div>
   </div>
@@ -1021,7 +1022,7 @@ const Personnel={
       'a-contrat':'typeContrat','a-cat':'categorie','a-corps':'corps','a-echelon':'echelon',
       'a-dir':'direction','a-poste':'poste','a-lieu-a':'lieuAffectation','a-statut':'statut',
       'a-dps':'datePriseService','a-dfc':'dateFinContrat',
-      'a-banque':'banque','a-diplome':'diplome','a-specialite':'specialite','a-obs':'observations'
+      'a-banque':'banque','a-diplome':'diplome','a-specialite':'specialite','a-nomi':'nominations','a-obs':'observations'
     };
     for(const[eid,fld]of Object.entries(map)){
       const el=document.getElementById(eid);if(el)el.value=a[fld]??'';
@@ -1082,6 +1083,7 @@ const Personnel={
       banque:document.getElementById('a-banque').value,
       diplome:document.getElementById('a-diplome').value,
       specialite:document.getElementById('a-specialite').value,
+      nominations:document.getElementById('a-nomi').value,
       observations:document.getElementById('a-obs').value,
       dateCreation:new Date().toISOString()
     };
@@ -1693,7 +1695,7 @@ const Rapports={
 
 // ═══════ PRINT ENGINE ═══════
 const Print={
-  async _min(){return{nom:await DB.prm('ministere','Ministère du développement à la base et de l\'économie sociale et solidaire'),drh:await DB.prm('drh','Responsable RH'),yr:await DB.prm('exercice',String(new Date().getFullYear()))};},
+  async _min(){return{nom:await DB.prm('ministere','Ministère du développement à la base et de l\'économie sociale et solidaire'),drh:await DB.prm('drh','PRINCE-AGBODJAN-SEMETOH Combetey'),yr:await DB.prm('exercice',String(new Date().getFullYear()))};},
 
   _hdr(m){return`<div style="text-align:center;border-bottom:3px solid #1B5E20;padding-bottom:12px;margin-bottom:20px">
     <div style="font-size:11px;color:#555;letter-spacing:2px">REPUBLIQUE TOGOLAISE</div>
@@ -1732,7 +1734,7 @@ const Print={
     const anc=H.anc(a.datePriseService);
     const d=H.droits(a.typeContrat,anc);
     const html=`${this._hdr(m)}
-    <h1>FICHE INDIVIDUELLE D'AGENT</h1>
+    <h1>FICHE INDIVIDUELLE AGENT</h1>
     <div class="ref">Réf: FICHE/${a.matricule}/${m.yr}</div>
     <h2>I. IDENTIFICATION</h2>
     <table>
@@ -1748,6 +1750,7 @@ const Print={
       <tr><td><strong>Corps</strong></td><td>${a.corps||'-'}</td><td><strong>Échelon</strong></td><td>${a.echelon||'-'}</td></tr>
       <tr><td><strong>Direction/Service</strong></td><td>${a.direction||'-'}</td><td><strong>Poste</strong></td><td>${a.poste||'-'}</td></tr>
       <tr><td><strong>Lieu d'affectation</strong></td><td>${a.lieuAffectation||'Lomé'}</td><td><strong>Prise de service</strong></td><td>${H.fdate(a.datePriseService)}</td></tr>
+      <tr><td><strong>Formation</strong></td><td>${a.specialite||'-'}</td><td><strong>Nomination</strong></td><td>${H.fdate(a.nominations)}</td></tr>
       <tr><td><strong>Ancienneté</strong></td><td><strong>${anc} ans</strong></td><td><strong>Fin de contrat</strong></td><td>${H.fdate(a.dateFinContrat)||'CDI / Indéterminé'}</td></tr>
     </table>
     <h2>III. DROITS À CONGÉS</h2>
@@ -1755,7 +1758,7 @@ const Print={
     <tbody><tr><td><strong>${d.j} jours / an</strong></td><td><strong>${d.cum} jours</strong></td><td>${d.base}</td></tr></tbody></table>
     <div class="sigs">
       <div class="sig"><div class="sig-line"></div><div style="font-size:11px">L'Agent<br><strong>${H.fn(a)}</strong></div></div>
-      <div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le Directeur des RH<br><strong>${m.drh}</strong></div></div>
+      <div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le Directeur des Affaires financières<br><strong>${m.drh}</strong></div></div>
     </div>
     ${this._ftr(m)}`;
     this._open(html,`Fiche Agent — ${H.fn(a)}`);
@@ -1788,7 +1791,7 @@ const Print={
     <div class="sigs">
       <div class="sig"><div class="sig-line"></div><div style="font-size:11px">L'Agent<br><strong>${H.fn(a)}</strong></div></div>
       <div class="sig"><div class="sig-line"></div><div style="font-size:11px">Chef de Service</div></div>
-      <div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le DRH<br><strong>${m.drh}</strong></div></div>
+      <div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le Directeur des Affaires Financières<br><strong>${m.drh}</strong></div></div>
     </div>
     ${this._ftr(m)}`;
     this._open(html,`Demande Congé — ${H.fn(a)}`);
@@ -1813,7 +1816,7 @@ const Print={
     </table>
     <div class="sigs">
       <div class="sig"><div class="sig-line"></div><div style="font-size:11px">L'Agent<br><strong>${H.fn(a)}</strong></div></div>
-      <div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le DRH<br><strong>${m.drh}</strong></div></div>
+      <div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le Directeur des Affaires Financières<br><strong>${m.drh}</strong></div></div>
     </div>
     ${this._ftr(m)}`;
     this._open(html,`Autorisation Absence — ${H.fn(a)}`);
@@ -1825,7 +1828,7 @@ const Print={
     const html=`${this._hdr(m)}<h1>ÉTAT NOMINATIF DU PERSONNEL</h1>
     <div style="margin-bottom:12px;font-size:11px;color:#555">Total: <strong>${ags.length} agents</strong> · Fonct: ${ags.filter(a=>a.typeContrat==='Fonctionnaire').length} · Contr: ${ags.filter(a=>a.typeContrat==='Contractuel').length} · H: ${ags.filter(a=>a.sexe==='Masculin').length} · F: ${ags.filter(a=>a.sexe==='Féminin').length}</div>
     <table><thead><tr><th>#</th><th>Matricule</th><th>Nom &amp; Prénoms</th><th>Sexe</th><th>Direction/Service</th><th>Poste</th><th>Contrat</th><th>Cat.</th><th>Anc.</th><th>Statut</th></tr></thead><tbody>${rows}</tbody></table>
-    <div class="sigs"><div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le DRH<br><strong>${m.drh}</strong></div></div></div>
+    <div class="sigs"><div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le Directeur des Affaires Financières<br><strong>${m.drh}</strong></div></div></div>
     ${this._ftr(m)}`;
     this._open(html,'État Nominatif du Personnel');
   },
@@ -1869,7 +1872,7 @@ const Print={
     }).join('');
     const html=`${this._hdr(m)}<h1>ÉTAT DES SOLDES DE CONGÉS — Exercice ${m.yr}</h1>
     <table><thead><tr><th>#</th><th>Matricule</th><th>Agent</th><th>Contrat</th><th>Anc.</th><th>Droits/An</th><th>Pris</th><th>Solde</th><th>Reportable</th></tr></thead><tbody>${rows}</tbody></table>
-    <div class="sigs"><div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le DRH<br><strong>${m.drh}</strong></div></div></div>${this._ftr(m)}`;
+    <div class="sigs"><div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le Directeur des Affaires Financières<br><strong>${m.drh}</strong></div></div></div>${this._ftr(m)}`;
     this._open(html,'État des Soldes de Congés');
   },
 
