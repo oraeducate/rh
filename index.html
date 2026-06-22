@@ -298,9 +298,15 @@ textarea.form-control{resize:vertical;min-height:70px;}
       <select class="form-control" style="width:150px" id="p-f-statut" onchange="Personnel.filter()">
        <option value="">Tous statuts</option><option>En activité</option><option>En congé</option><option>En détachement</option><option>Mise en indisponibilité</option><option>Maintien par ordre sans affectation</option><option>Sous les drapeaux</option><option>Hors cadres</option>
       </select>
+      <select class="form-control" style="width:160px" id="p-sort" onchange="Personnel.filter()">
+       <option value="matricule">Trier: Matricule ↑</option>
+       <option value="nom">Trier: Nom A-Z</option>
+       <option value="anciennete">Trier: Ancienneté ↓</option>
+       <option value="retraite">Trier: Retraite ↑</option>
+      </select>
      </div>
      <div class="table-wrap">
-      <table><thead><tr><th>Matricule</th><th>Nom &amp; Prénoms</th><th>Sexe</th><th>Direction/Service</th><th>Poste</th><th>Contrat</th><th>Catég.</th><th>Anc.</th><th>Statut</th><th>Actions</th></tr></thead>
+      <table><thead><tr><th>Matricule</th><th>Nom &amp; Prénoms</th><th>Sexe</th><th>Direction/Service</th><th>Poste</th><th>Contrat</th><th>Catég.</th><th>Anc.</th><th>Retraite</th><th>Statut</th><th>Actions</th></tr></thead>
       <tbody id="p-tbody"></tbody></table>
      </div>
      <div class="pagination" id="p-pages"></div>
@@ -434,12 +440,12 @@ textarea.form-control{resize:vertical;min-height:70px;}
      <div class="tab" data-ptab="sys" onclick="Params.tab(this)">Système</div>
     </div>
     <div id="pt-droits">
-     <div class="card"><div class="card-title" style="margin-bottom:12px">Droits à congés (Statut GFP)</div>
-     <div class="table-wrap"><table><thead><tr><th>Type Contrat</th><th>Tranche (ans)</th><th>De</th><th>À</th><th>Jours/an</th><th>Cumul Max</th><th>Base légale</th></tr></thead><tbody id="pt-droits-tb"></tbody></table></div></div>
+     <div class="card"><div class="card-header"><div class="card-title">Droits à congés (Statut GFP)</div><button class="btn btn-primary btn-sm" onclick="Params.addDroit()">＋ Ajouter</button></div>
+     <div class="table-wrap"><table><thead><tr><th>Type Contrat</th><th>De (ans)</th><th>À (ans)</th><th>Jours/an</th><th>Cumul Max</th><th>Base légale</th><th>Actions</th></tr></thead><tbody id="pt-droits-tb"></tbody></table></div></div>
     </div>
     <div id="pt-permlegal" style="display:none">
-     <div class="card"><div class="card-title" style="margin-bottom:12px">Permissions exceptionnelles (Art. 222-230 Statut GFP)</div>
-     <div class="table-wrap"><table><thead><tr><th>Motif</th><th>Jours légaux</th><th>Justificatif requis</th><th>Applicable à</th></tr></thead><tbody id="pt-perm-tb"></tbody></table></div>
+     <div class="card"><div class="card-header"><div class="card-title">Permissions exceptionnelles (Art. 222-230 Statut GFP)</div><button class="btn btn-purple btn-sm" onclick="Params.addPerm()">＋ Ajouter</button></div>
+     <div class="table-wrap"><table><thead><tr><th>Motif</th><th>Jours légaux</th><th>Justificatif requis</th><th>Actions</th></tr></thead><tbody id="pt-perm-tb"></tbody></table></div></div>
     </div>
     <div id="pt-dirs" style="display:none">
      <div class="card">
@@ -499,7 +505,7 @@ textarea.form-control{resize:vertical;min-height:70px;}
     <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="a-email" type="email"></div>
    </div>
    <div id="at-1" style="display:none">
-    <div class="form-row"><div class="form-group"><label class="form-label">Type de contrat <span class="req">*</span></label><select class="form-control" id="a-contrat" onchange="Personnel.updContrat()"><option value="">--</option><option>Fonctionnaire</option><option>Contractuel</option><option>Stagiaire</option></select></div><div class="form-group"><label class="form-label">Catégorie</label><select class="form-control" id="a-cat"><option value="">--</option><option>A1</option><option>A2</option><option>A3</option><option>B</option><option>C</option><option>D</option></select></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Type de contrat <span class="req">*</span></label><select class="form-control" id="a-contrat" onchange="Personnel.updContrat()"><option value="">--</option><option>Fonctionnaire</option><option>Contractuel</option><option>Stagiaire</option><option>Vacataire</option></select></div><div class="form-group"><label class="form-label">Catégorie</label><select class="form-control" id="a-cat"><option value="">--</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option><option>D</option></select></div></div>
     <div class="form-row"><div class="form-group"><label class="form-label">Corps</label><input class="form-control" id="a-corps"></div><div class="form-group"><label class="form-label">Échelon</label><input class="form-control" id="a-echelon"></div></div>
     <div class="form-row"><div class="form-group"><label class="form-label">Direction / Service <span class="req">*</span></label><input class="form-control" id="a-dir" list="dirs-dl"><datalist id="dirs-dl"></datalist></div><div class="form-group"><label class="form-label">Poste / Emploi <span class="req">*</span></label><input class="form-control" id="a-poste"></div></div>
     <div class="form-row"><div class="form-group"><label class="form-label">Lieu d'affectation</label><input class="form-control" id="a-lieu-a" value="Lomé"></div><div class="form-group"><label class="form-label">Statut</label><select class="form-control" id="a-statut"><option>En activité</option><option>En congé</option><option>En mission</option><option>Suspendu</option><option>Retraité</option><option>Décédé</option></select></div></div>
@@ -834,9 +840,48 @@ const DB={
 
 // ═══════ HELPERS ═══════
 const H={
+  // Parse date from various formats including Excel serial numbers
+  parseDate(v){
+    if(!v)return'';
+    // Already ISO/string date
+    if(typeof v==='string'){
+      // dd/mm/yyyy
+      if(/^\d{2}\/\d{2}\/\d{4}$/.test(v)){const[d,mo,y]=v.split('/');return`${y}-${mo}-${d}`;}
+      // dd-mm-yyyy
+      if(/^\d{2}-\d{2}-\d{4}$/.test(v)){const[d,mo,y]=v.split('-');return`${y}-${mo}-${d}`;}
+      // yyyy/mm/dd
+      if(/^\d{4}\/\d{2}\/\d{2}$/.test(v)){return v.replace(/\//g,'-');}
+      // Already ISO or other string date
+      const td=new Date(v);if(!isNaN(td))return td.toISOString().slice(0,10);
+      return v;
+    }
+    // Excel serial number
+    if(typeof v==='number'&&v>1000){
+      const d=new Date(Math.round((v-25569)*86400*1000));
+      if(!isNaN(d))return d.toISOString().slice(0,10);
+    }
+    return String(v);
+  },
   fdate(s){if(!s)return'';const d=new Date(s);return isNaN(d)?s:d.toLocaleDateString('fr-FR');},
   anc(s){if(!s)return 0;return Math.floor((Date.now()-new Date(s))/(365.25*864e5));},
   age(s){if(!s)return'';return Math.floor((Date.now()-new Date(s))/(365.25*864e5))+' ans';},
+  // Compute retirement date: earliest of 60 years old OR 30 years of service
+  retraite(ddn,dps){
+    const r={date:'',motif:''};
+    if(ddn){const d=new Date(ddn);d.setFullYear(d.getFullYear()+60);r.age=d;}
+    if(dps){const d=new Date(dps);d.setFullYear(d.getFullYear()+30);r.anc=d;}
+    if(r.age&&r.anc){
+      if(r.anc<=r.age){r.date=r.anc.toISOString().slice(0,10);r.motif='30 ans de service';}
+      else{r.date=r.age.toISOString().slice(0,10);r.motif='60 ans d\'âge';}
+    }else if(r.age){r.date=r.age.toISOString().slice(0,10);r.motif='60 ans d\'âge';}
+    else if(r.anc){r.date=r.anc.toISOString().slice(0,10);r.motif='30 ans de service';}
+    return r;
+  },
+  // Validate helpers
+  validTel(v){return!v||/^\d{6,15}$/.test(v.replace(/\s/g,''));},
+  validEmail(v){return!v||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);},
+  validAgeMini(ddn,min=18){if(!ddn)return true;return H.anc(ddn)>=min;},
+  validDpsNotFuture(dps){if(!dps)return true;return new Date(dps)<=new Date();},
   droits(type,anc){
     const r=DROITS.find(d=>d.t===type&&anc>=d.de&&anc<=d.a);
     return r||{j:0,cum:0,base:''};
@@ -959,7 +1004,10 @@ const Personnel={
     }
     tb.innerHTML=pg.map(a=>{
       const anc=H.anc(a.datePriseService);
+      const ret=H.retraite(a.dateNaissance,a.datePriseService);
       const cb=a.typeContrat==='Fonctionnaire'?'bg-success':a.typeContrat==='Contractuel'?'bg-info':'bg-gray';
+      // Check if retirement within 2 years
+      const retSoon=ret.date&&(new Date(ret.date)-Date.now())<2*365.25*864e5&&(new Date(ret.date)-Date.now())>0;
       return`<tr>
         <td><strong>${H.esc(a.matricule)}</strong></td>
         <td>${H.esc(H.fn(a))}</td>
@@ -969,6 +1017,7 @@ const Personnel={
         <td><span class="badge ${cb}">${a.typeContrat||''}</span></td>
         <td>${a.categorie||'-'}</td>
         <td>${anc}a</td>
+        <td style="font-size:11px;white-space:nowrap;color:${retSoon?'var(--warning)':'inherit'}">${ret.date?H.fdate(ret.date):'-'}${retSoon?' ⚠️':''}</td>
         <td>${H.badge(a.statut)}</td>
         <td class="actions">
           <button class="btn btn-secondary btn-xs" onclick="Personnel.edit(${a.id})" title="Modifier">✏️</button>
@@ -988,11 +1037,17 @@ const Personnel={
   filter(){
     const fc=document.getElementById('p-f-contrat')?.value||'';
     const fs=document.getElementById('p-f-statut')?.value||'';
+    const sort=document.getElementById('p-sort')?.value||'matricule';
     const q=(document.getElementById('p-search')?.value||'').toLowerCase();
     this._f=this._d.filter(a=>{
       const mq=!q||H.fn(a).toLowerCase().includes(q)||(a.matricule||'').toLowerCase().includes(q);
       return mq&&(!fc||a.typeContrat===fc)&&(!fs||a.statut===fs);
     });
+    // Apply sort
+    if(sort==='matricule')this._f.sort((a,b)=>(a.matricule||'').localeCompare(b.matricule||'',undefined,{numeric:true}));
+    else if(sort==='nom')this._f.sort((a,b)=>H.fn(a).localeCompare(H.fn(b)));
+    else if(sort==='anciennete')this._f.sort((a,b)=>H.anc(b.datePriseService)-H.anc(a.datePriseService));
+    else if(sort==='retraite')this._f.sort((a,b)=>{const ra=H.retraite(a.dateNaissance,a.datePriseService).date||'9999';const rb=H.retraite(b.dateNaissance,b.datePriseService).date||'9999';return ra.localeCompare(rb);});
     this._p=1;this.render();
   },
   applyF(){this.filter();},
@@ -1062,11 +1117,18 @@ const Personnel={
     const dps=document.getElementById('a-dps').value;
     const dir=document.getElementById('a-dir').value.trim();
     const pst=document.getElementById('a-poste').value.trim();
+    const ddn=document.getElementById('a-ddn').value;
+    const tel=document.getElementById('a-tel').value.trim();
+    const email=document.getElementById('a-email').value.trim();
     if(!mat||!nom||!prn||!typ||!dps||!dir||!pst){
       UI.toast('Champs obligatoires manquants (*)','error');return;
     }
+    if(ddn&&!H.validAgeMini(ddn,18)){UI.toast('Date de naissance : l\'agent doit avoir au moins 18 ans','error');return;}
+    if(!H.validDpsNotFuture(dps)){UI.toast('Date de prise de service ne peut pas être postérieure à aujourd\'hui','error');return;}
+    if(!H.validTel(tel)){UI.toast('Le numéro de téléphone doit être numérique','error');return;}
+    if(!H.validEmail(email)){UI.toast('Adresse email invalide','error');return;}
     const data={matricule:mat,nom,prenom:prn,typeContrat:typ,datePriseService:dps,direction:dir,poste:pst,
-      dateNaissance:document.getElementById('a-ddn').value,
+      dateNaissance:ddn,
       lieuNaissance:document.getElementById('a-lieu-n').value,
       sexe:document.getElementById('a-sexe').value,
       situationMatrimoniale:document.getElementById('a-matri').value,
@@ -1671,6 +1733,9 @@ const Dashboard={
     if(habs)al.push({t:'danger',m:`${habs} agent(s) avec 5+ absences irrégulières — risque disciplinaire`});
     const in30=ags.filter(a=>{if(!a.dateFinContrat)return false;const d=(new Date(a.dateFinContrat)-Date.now())/(864e5);return d>=0&&d<=30;});
     if(in30.length)al.push({t:'warn',m:`${in30.length} contrat(s) expirant dans les 30 prochains jours`});
+    // Retirement within 1 year
+    const retBientot=ags.filter(a=>{const r=H.retraite(a.dateNaissance,a.datePriseService);if(!r.date)return false;const j=(new Date(r.date)-Date.now())/(864e5);return j>=0&&j<=365;});
+    if(retBientot.length)al.push({t:'warn',m:`${retBientot.length} agent(s) partant à la retraite dans les 12 prochains mois`});
     const sans=ags.filter(a=>!a.sexe||!a.typeContrat||!a.datePriseService);
     if(sans.length)al.push({t:'warn',m:`${sans.length} fiche(s) agent incomplète(s) (données manquantes)`});
     const el=document.getElementById('alerts-list');
@@ -1682,12 +1747,13 @@ const Dashboard={
 const Rapports={
   load(){
     const raps=[
-      {icon:'👥',title:'État nominatif du personnel',desc:'Liste complète des agents avec données administratives',c:'#1B5E20',fn:'Print.etatPersonnel()'},
-      {icon:'📋',title:'Fiche individuelle agent',desc:'Fiche complète d\'un agent à sélectionner',c:'#1565C0',fn:'Print.selectAgent()'},
+      {icon:'👥',title:'État nominatif du personnel',desc:'Liste complète des agents triée par ordre du registre (matricule), avec date de retraite',c:'#1B5E20',fn:'Print.etatPersonnel()'},
+      {icon:'📋',title:'Fiche individuelle agent',desc:'Fiche complète d\'un agent à sélectionner, avec date de départ à la retraite',c:'#1565C0',fn:'Print.selectAgent()'},
       {icon:'🏖️',title:'État des congés',desc:'Récapitulatif de toutes les demandes de congé',c:'#E65100',fn:'Print.etatConges()'},
       {icon:'📋',title:'État des permissions',desc:'Toutes les permissions accordées avec justificatifs',c:'#6A1B9A',fn:'Print.etatPermissions()'},
       {icon:'⚠️',title:'Rapport des absences',desc:'Absences irrégulières, retards et sanctions',c:'#C62828',fn:'Print.etatAbsences()'},
       {icon:'📊',title:'État des soldes de congés',desc:'Droits, pris, soldes et cumuls par agent',c:'#004D40',fn:'Print.etatSoldes()'},
+      {icon:'📅',title:'Situation par période',desc:'Congés, permissions et absences sur une période définie — impression possible',c:'#F9A825',fn:'Print.situationPeriode()'},
     ];
     document.getElementById('rapports-grid').innerHTML=raps.map(r=>`<div class="rapport-card" style="--rc:${r.c}"><div class="r-icon">${r.icon}</div><div class="r-title">${r.title}</div><div class="r-desc">${r.desc}</div><button class="btn btn-sm" style="background:${r.c};color:#fff" onclick="${r.fn}">🖨️ Générer &amp; Imprimer</button></div>`).join('');
   }
@@ -1695,7 +1761,7 @@ const Rapports={
 
 // ═══════ PRINT ENGINE ═══════
 const Print={
-  async _min(){return{nom:await DB.prm('ministere','Ministère du développement à la base et de l\'économie sociale et solidaire'),drh:await DB.prm('drh','PRINCE-AGBODJAN-SEMETOH Combetey'),yr:await DB.prm('exercice',String(new Date().getFullYear()))};},
+  async _min(){return{nom:await DB.prm('ministere','Ministère du développement à la base et de l\'économie sociale et solidaire'),drh:await DB.prm('drh','DAF - RAF'),yr:await DB.prm('exercice',String(new Date().getFullYear()))};},
 
   _hdr(m){return`<div style="text-align:center;border-bottom:3px solid #1B5E20;padding-bottom:12px;margin-bottom:20px">
     <div style="font-size:11px;color:#555;letter-spacing:2px">REPUBLIQUE TOGOLAISE</div>
@@ -1733,6 +1799,7 @@ const Print={
     const m=await this._min();
     const anc=H.anc(a.datePriseService);
     const d=H.droits(a.typeContrat,anc);
+    const ret=H.retraite(a.dateNaissance,a.datePriseService);
     const html=`${this._hdr(m)}
     <h1>FICHE INDIVIDUELLE AGENT</h1>
     <div class="ref">Réf: FICHE/${a.matricule}/${m.yr}</div>
@@ -1752,6 +1819,7 @@ const Print={
       <tr><td><strong>Lieu d'affectation</strong></td><td>${a.lieuAffectation||'Lomé'}</td><td><strong>Prise de service</strong></td><td>${H.fdate(a.datePriseService)}</td></tr>
       <tr><td><strong>Formation</strong></td><td>${a.specialite||'-'}</td><td><strong>Nomination</strong></td><td>${H.fdate(a.nominations)}</td></tr>
       <tr><td><strong>Ancienneté</strong></td><td><strong>${anc} ans</strong></td><td><strong>Fin de contrat</strong></td><td>${H.fdate(a.dateFinContrat)||'CDI / Indéterminé'}</td></tr>
+      <tr style="background:#FFF3E0"><td><strong>Date départ retraite</strong></td><td><strong style="color:#E65100">${ret.date?H.fdate(ret.date):'—'}</strong></td><td><strong>Motif retraite</strong></td><td>${ret.motif||'—'}</td></tr>
     </table>
     <h2>III. DROITS À CONGÉS</h2>
     <table><thead><tr><th>Droits annuels</th><th>Cumul max autorisé</th><th>Base légale</th></tr></thead>
@@ -1824,10 +1892,15 @@ const Print={
 
   async etatPersonnel(){
     const ags=await DB.getAll('agents');const m=await this._min();
-    const rows=ags.map((a,i)=>`<tr><td>${i+1}</td><td>${a.matricule}</td><td>${H.fn(a)}</td><td>${a.sexe||''}</td><td>${a.direction||''}</td><td>${a.poste||''}</td><td>${a.typeContrat||''}</td><td>${a.categorie||''}</td><td>${H.anc(a.datePriseService)}a</td><td>${a.statut||''}</td></tr>`).join('');
+    // Sort by matricule (registre du personnel)
+    ags.sort((a,b)=>(a.matricule||'').localeCompare(b.matricule||'',undefined,{numeric:true}));
+    const rows=ags.map((a,i)=>{
+      const ret=H.retraite(a.dateNaissance,a.datePriseService);
+      return`<tr><td>${i+1}</td><td>${a.matricule}</td><td>${H.fn(a)}</td><td>${a.sexe||''}</td><td>${a.direction||''}</td><td>${a.poste||''}</td><td>${a.typeContrat||''}</td><td>${a.categorie||''}</td><td>${H.anc(a.datePriseService)}a</td><td>${ret.date?H.fdate(ret.date):'-'}</td><td>${a.statut||''}</td></tr>`;
+    }).join('');
     const html=`${this._hdr(m)}<h1>ÉTAT NOMINATIF DU PERSONNEL</h1>
-    <div style="margin-bottom:12px;font-size:11px;color:#555">Total: <strong>${ags.length} agents</strong> · Fonct: ${ags.filter(a=>a.typeContrat==='Fonctionnaire').length} · Contr: ${ags.filter(a=>a.typeContrat==='Contractuel').length} · H: ${ags.filter(a=>a.sexe==='Masculin').length} · F: ${ags.filter(a=>a.sexe==='Féminin').length}</div>
-    <table><thead><tr><th>#</th><th>Matricule</th><th>Nom &amp; Prénoms</th><th>Sexe</th><th>Direction/Service</th><th>Poste</th><th>Contrat</th><th>Cat.</th><th>Anc.</th><th>Statut</th></tr></thead><tbody>${rows}</tbody></table>
+    <div style="margin-bottom:12px;font-size:11px;color:#555">Total: <strong>${ags.length} agents</strong> · Fonct: ${ags.filter(a=>a.typeContrat==='Fonctionnaire').length} · Contr: ${ags.filter(a=>a.typeContrat==='Contractuel').length} · H: ${ags.filter(a=>a.sexe==='Masculin').length} · F: ${ags.filter(a=>a.sexe==='Féminin').length} · <em>Trié par ordre du registre (matricule)</em></div>
+    <table><thead><tr><th>#</th><th>Matricule</th><th>Nom &amp; Prénoms</th><th>Sexe</th><th>Direction/Service</th><th>Poste</th><th>Contrat</th><th>Cat.</th><th>Anc.</th><th>Retraite</th><th>Statut</th></tr></thead><tbody>${rows}</tbody></table>
     <div class="sigs"><div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le Directeur des Affaires Financières<br><strong>${m.drh}</strong></div></div></div>
     ${this._ftr(m)}`;
     this._open(html,'État Nominatif du Personnel');
@@ -1874,6 +1947,74 @@ const Print={
     <table><thead><tr><th>#</th><th>Matricule</th><th>Agent</th><th>Contrat</th><th>Anc.</th><th>Droits/An</th><th>Pris</th><th>Solde</th><th>Reportable</th></tr></thead><tbody>${rows}</tbody></table>
     <div class="sigs"><div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le Directeur des Affaires Financières<br><strong>${m.drh}</strong></div></div></div>${this._ftr(m)}`;
     this._open(html,'État des Soldes de Congés');
+  },
+
+  async situationPeriode(){
+    // Prompt user for period via a mini overlay
+    const period=await new Promise(res=>{
+      const ov=document.createElement('div');
+      ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:5000;display:flex;align-items:center;justify-content:center';
+      ov.innerHTML=`<div style="background:#fff;border-radius:12px;padding:24px;width:420px">
+        <div style="font-size:14px;font-weight:800;color:#1B5E20;margin-bottom:16px">📅 Situation par période</div>
+        <div style="margin-bottom:12px;font-size:12px">
+          <label style="display:block;font-weight:600;margin-bottom:4px">Date de début</label>
+          <input type="date" id="_pd1" style="width:100%;padding:8px;border:1.5px solid #ccc;border-radius:6px;font-size:12px">
+        </div>
+        <div style="margin-bottom:16px;font-size:12px">
+          <label style="display:block;font-weight:600;margin-bottom:4px">Date de fin</label>
+          <input type="date" id="_pd2" style="width:100%;padding:8px;border:1.5px solid #ccc;border-radius:6px;font-size:12px">
+        </div>
+        <div style="margin-bottom:16px;font-size:12px">
+          <label style="display:block;font-weight:600;margin-bottom:6px">Données à inclure</label>
+          <label style="display:flex;gap:6px;margin-bottom:4px"><input type="checkbox" id="_pc" checked> Congés</label>
+          <label style="display:flex;gap:6px;margin-bottom:4px"><input type="checkbox" id="_pp" checked> Permissions</label>
+          <label style="display:flex;gap:6px"><input type="checkbox" id="_pa" checked> Absences</label>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button onclick="window._pRes(null)" style="padding:8px 16px;background:#ECEFF1;border:none;border-radius:6px;cursor:pointer;font-size:12px">Annuler</button>
+          <button onclick="window._pRes({d1:document.getElementById('_pd1').value,d2:document.getElementById('_pd2').value,c:document.getElementById('_pc').checked,p:document.getElementById('_pp').checked,a:document.getElementById('_pa').checked})" style="padding:8px 16px;background:#1B5E20;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700">🖨️ Générer</button>
+        </div>
+      </div>`;
+      document.body.appendChild(ov);
+      window._pRes=v=>{document.body.removeChild(ov);delete window._pRes;res(v);};
+    });
+    if(!period||!period.d1||!period.d2){if(period)UI.toast('Veuillez saisir les deux dates','error');return;}
+    const d1=new Date(period.d1),d2=new Date(period.d2);d2.setHours(23,59,59);
+    if(d1>d2){UI.toast('La date de début doit être avant la date de fin','error');return;}
+    const[ags,cgs,perms,abs]=await Promise.all([DB.getAll('agents'),DB.getAll('conges'),DB.getAll('permissions'),DB.getAll('absences')]);
+    const am=Object.fromEntries(ags.map(a=>[a.id,a]));
+    const m=await this._min();
+    const inRange=(dateStr)=>{if(!dateStr)return false;const d=new Date(dateStr);return d>=d1&&d<=d2;};
+    let html=`${this._hdr(m)}<h1>SITUATION DU PERSONNEL PAR PÉRIODE</h1>
+    <div style="margin-bottom:14px;padding:10px;background:#E8F5E9;border-radius:6px;font-size:12px">
+      Période: <strong>${H.fdate(period.d1)}</strong> au <strong>${H.fdate(period.d2)}</strong>
+    </div>`;
+    if(period.c){
+      const fcgs=cgs.filter(c=>inRange(c.dateDepart)||inRange(c.dateRetourPrevu));
+      html+=`<h2>CONGÉS (${fcgs.length})</h2>`;
+      if(fcgs.length){
+        const rows=fcgs.map((c,i)=>{const a=am[c.agentId];return`<tr><td>${i+1}</td><td><strong>${H.fn(a)}</strong></td><td>${a?.matricule||''}</td><td>${a?.direction||''}</td><td>${c.typeConge||''}</td><td>${H.fdate(c.dateDepart)}</td><td>${H.fdate(c.dateRetourPrevu)}</td><td>${c.joursAccordes||0}j</td><td>${c.statut||''}</td></tr>`;}).join('');
+        html+=`<table><thead><tr><th>#</th><th>Agent</th><th>Matricule</th><th>Direction</th><th>Type</th><th>Départ</th><th>Retour</th><th>Jours</th><th>Statut</th></tr></thead><tbody>${rows}</tbody></table>`;
+      }else html+='<p style="color:#78909C;font-size:12px;margin-bottom:14px">Aucun congé sur cette période.</p>';
+    }
+    if(period.p){
+      const fperms=perms.filter(p=>inRange(p.dateDebut)||inRange(p.dateFin));
+      html+=`<h2>PERMISSIONS (${fperms.length})</h2>`;
+      if(fperms.length){
+        const rows=fperms.map((p,i)=>{const a=am[p.agentId];return`<tr><td>${i+1}</td><td><strong>${H.fn(a)}</strong></td><td>${a?.matricule||''}</td><td>${a?.direction||''}</td><td>${p.motif||''}</td><td>${H.fdate(p.dateDebut)}</td><td>${H.fdate(p.dateFin)}</td><td>${p.joursAccordes||0}j</td><td>${p.statut||''}</td></tr>`;}).join('');
+        html+=`<table><thead><tr><th>#</th><th>Agent</th><th>Matricule</th><th>Direction</th><th>Motif</th><th>Début</th><th>Fin</th><th>Jours</th><th>Statut</th></tr></thead><tbody>${rows}</tbody></table>`;
+      }else html+='<p style="color:#78909C;font-size:12px;margin-bottom:14px">Aucune permission sur cette période.</p>';
+    }
+    if(period.a){
+      const fabs=abs.filter(a=>inRange(a.dateAbsence));
+      html+=`<h2>ABSENCES (${fabs.length})</h2>`;
+      if(fabs.length){
+        const rows=fabs.map((ab,i)=>{const a=am[ab.agentId];return`<tr><td>${i+1}</td><td><strong>${H.fn(a)}</strong></td><td>${a?.matricule||''}</td><td>${a?.direction||''}</td><td>${ab.typeAbsence||''}</td><td>${H.fdate(ab.dateAbsence)}</td><td>${ab.nbJours||1}</td><td>${ab.statut||''}</td></tr>`;}).join('');
+        html+=`<table><thead><tr><th>#</th><th>Agent</th><th>Matricule</th><th>Direction</th><th>Type</th><th>Date</th><th>Jours</th><th>Statut</th></tr></thead><tbody>${rows}</tbody></table>`;
+      }else html+='<p style="color:#78909C;font-size:12px;margin-bottom:14px">Aucune absence sur cette période.</p>';
+    }
+    html+=`<div class="sigs"><div class="sig"><div class="sig-line"></div><div style="font-size:11px">Le Directeur des Affaires Financières<br><strong>${m.drh}</strong></div></div></div>${this._ftr(m)}`;
+    this._open(html,'Situation du Personnel par Période');
   },
 
   async selectAgent(){
@@ -1996,14 +2137,14 @@ const Excel={
           try{
             await DB.add('agents',{
               matricule:String(r['Matricule']),nom:r['Nom']||'',prenom:r['Prénoms']||r['Prenoms']||'',
-              dateNaissance:r['Date Naissance']||'',lieuNaissance:r['Lieu Naissance']||'',
+              dateNaissance:H.parseDate(r['Date Naissance']),lieuNaissance:r['Lieu Naissance']||'',
               sexe:r['Sexe']||'',situationMatrimoniale:r['Sit. Matrimoniale']||'',
               nbEnfants:parseInt(r['Nb Enfants'])||0,direction:r['Direction']||'',
               poste:r['Poste']||'',corps:r['Corps']||'',categorie:r['Catégorie']||r['Categorie']||'',
               echelon:r['Échelon']||r['Echelon']||'',lieuAffectation:r['Lieu Affectation']||'Lomé',
-              typeContrat:r['Type Contrat']||'Contractuel',datePriseService:r['Date Prise Service']||'',
-              dateFinContrat:r['Date Fin Contrat']||'',statut:r['Statut']||'En activité',
-              cni:r['CNI']||'',tel:r['Téléphone']||r['Telephone']||'',email:r['Email']||'',
+              typeContrat:r['Type Contrat']||'Contractuel',datePriseService:H.parseDate(r['Date Prise Service']),
+              dateFinContrat:H.parseDate(r['Date Fin Contrat']),statut:r['Statut']||'En activité',
+              cni:r['CNI']||'',tel:String(r['Téléphone']||r['Telephone']||''),email:r['Email']||'',
               diplome:r['Diplôme']||r['Diplome']||'',specialite:r['Spécialité']||r['Specialite']||'',
               observations:r['Observations']||'',dateCreation:new Date().toISOString()
             });res.p++;
@@ -2018,8 +2159,8 @@ const Excel={
         for(const r of gs('CONGE')){
           const aid=matMap[String(r['Matricule'])];if(!aid)continue;
           await DB.add('conges',{agentId:aid,typeConge:r['Type Congé']||r['Type Conge']||'',
-            dateDepart:r['Date Départ']||r['Date Depart']||'',dateRetourPrevu:r['Date Retour Prévu']||r['Date Retour Prevu']||'',
-            dateRepriseEffective:r['Date Reprise']||'',interimaire:r['Intérimaire']||r['Interimaire']||'',
+            dateDepart:H.parseDate(r['Date Départ']||r['Date Depart']),dateRetourPrevu:H.parseDate(r['Date Retour Prévu']||r['Date Retour Prevu']),
+            dateRepriseEffective:H.parseDate(r['Date Reprise']||''),interimaire:r['Intérimaire']||r['Interimaire']||'',
             joursDemandes:parseInt(r['Jours Demandés']||r['Jours Demandes'])||0,
             joursAccordes:parseInt(r['Jours Accordés']||r['Jours Accordes'])||0,
             statut:r['Statut']||'En attente',visaResponsable:r['Visa']||'',
@@ -2031,7 +2172,7 @@ const Excel={
         for(const r of gs('PERMISSION')){
           const aid=matMap[String(r['Matricule'])];if(!aid)continue;
           await DB.add('permissions',{agentId:aid,motif:r['Motif']||'',
-            dateDebut:r['Date Début']||r['Date Debut']||'',dateFin:r['Date Fin']||'',
+            dateDebut:H.parseDate(r['Date Début']||r['Date Debut']),dateFin:H.parseDate(r['Date Fin']||''),
             joursLegaux:parseInt(r['Jours Légaux']||r['Jours Legaux'])||0,
             joursDemandes:parseInt(r['Jours Demandés']||r['Jours Demandes'])||0,
             joursAccordes:parseInt(r['Jours Accordés']||r['Jours Accordes'])||0,
@@ -2044,7 +2185,7 @@ const Excel={
         for(const r of gs('ABSENCE')){
           const aid=matMap[String(r['Matricule'])];if(!aid)continue;
           await DB.add('absences',{agentId:aid,typeAbsence:r['Type Absence']||'',
-            dateAbsence:r['Date']||'',heureArrivee:r['Heure Arrivée']||r['Heure Arrivee']||'',
+            dateAbsence:H.parseDate(r['Date']||''),heureArrivee:r['Heure Arrivée']||r['Heure Arrivee']||'',
             nbJours:parseFloat(r['Nb Jours'])||1,motifDeclare:r['Motif Déclaré']||r['Motif Declare']||'',
             statut:r['Statut']||'En traitement',observations:r['Observations']||'',
             dateCreation:new Date().toISOString()});res.ab++;
@@ -2076,13 +2217,58 @@ const Params={
 
   loadDroits(){
     const tb=document.getElementById('pt-droits-tb');if(!tb)return;
-    const colors=['#E8F5E9','#fff','#E8F5E9','#fff','#E8F5E9','#fff'];
-    tb.innerHTML=DROITS.map((d,i)=>`<tr style="background:${colors[i]}"><td><strong>${d.t}</strong></td><td>${d.de} à ${d.a===99?'∞':d.a} ans</td><td>${d.de}</td><td>${d.a===99?'∞':d.a}</td><td><strong>${d.j}</strong></td><td><strong>${d.cum}</strong></td><td style="font-size:10px;color:#78909C">${d.base}</td></tr>`).join('');
+    tb.innerHTML=DROITS.map((d,i)=>`<tr>
+      <td><input style="width:100%;border:1px solid #ccc;border-radius:4px;padding:3px 5px;font-size:11px" value="${H.esc(d.t)}" onchange="DROITS[${i}].t=this.value"></td>
+      <td><input type="number" style="width:55px;border:1px solid #ccc;border-radius:4px;padding:3px 5px;font-size:11px" value="${d.de}" onchange="DROITS[${i}].de=parseInt(this.value)||0"></td>
+      <td><input type="number" style="width:55px;border:1px solid #ccc;border-radius:4px;padding:3px 5px;font-size:11px" value="${d.a===99?99:d.a}" onchange="DROITS[${i}].a=parseInt(this.value)||99"></td>
+      <td><input type="number" style="width:55px;border:1px solid #ccc;border-radius:4px;padding:3px 5px;font-size:11px" value="${d.j}" onchange="DROITS[${i}].j=parseInt(this.value)||0"></td>
+      <td><input type="number" style="width:55px;border:1px solid #ccc;border-radius:4px;padding:3px 5px;font-size:11px" value="${d.cum}" onchange="DROITS[${i}].cum=parseInt(this.value)||0"></td>
+      <td><input style="width:100%;border:1px solid #ccc;border-radius:4px;padding:3px 5px;font-size:11px" value="${H.esc(d.base)}" onchange="DROITS[${i}].base=this.value"></td>
+      <td><button class="btn btn-danger btn-xs" onclick="Params.delDroit(${i})">🗑️</button></td>
+    </tr>`).join('');
+  },
+
+  addDroit(){
+    DROITS.push({t:'Nouveau type',de:0,a:99,j:30,cum:60,base:'Base légale'});
+    this.loadDroits();UI.toast('Ligne ajoutée — modifiez et enregistrez');
+  },
+  delDroit(i){
+    if(DROITS.length<=1){UI.toast('Impossible de supprimer la dernière entrée','error');return;}
+    DROITS.splice(i,1);this.loadDroits();
   },
 
   loadPerms(){
     const tb=document.getElementById('pt-perm-tb');if(!tb)return;
-    tb.innerHTML=Object.entries(PERMS_LEGALES).map(([k,v],i)=>`<tr style="background:${i%2?'#fff':'#EDE7F6'}"><td>${k}</td><td><strong>${v.j||'Durée mission'}</strong></td><td>${v.just}</td><td>Fonctionnaire, Contractuel</td></tr>`).join('');
+    const keys=Object.keys(PERMS_LEGALES);
+    tb.innerHTML=keys.map((k,i)=>{
+      const v=PERMS_LEGALES[k];
+      return`<tr style="background:${i%2?'#fff':'#EDE7F6'}">
+        <td><input style="width:100%;border:1px solid #ccc;border-radius:4px;padding:3px 5px;font-size:11px" value="${H.esc(k)}" id="pk-${i}"></td>
+        <td><input type="number" style="width:60px;border:1px solid #ccc;border-radius:4px;padding:3px 5px;font-size:11px" value="${v.j||0}" id="pj-${i}"></td>
+        <td><input style="width:100%;border:1px solid #ccc;border-radius:4px;padding:3px 5px;font-size:11px" value="${H.esc(v.just||'')}" id="pju-${i}"></td>
+        <td><button class="btn btn-primary btn-xs" onclick="Params.savePerm(${i},'${H.esc(k)}')">💾</button> <button class="btn btn-danger btn-xs" onclick="Params.delPerm('${H.esc(k)}')">🗑️</button></td>
+      </tr>`;
+    }).join('');
+  },
+
+  savePerm(i,oldKey){
+    const nk=document.getElementById(`pk-${i}`).value.trim();
+    const nj=parseInt(document.getElementById(`pj-${i}`).value)||0;
+    const nj2=document.getElementById(`pju-${i}`).value.trim();
+    if(!nk){UI.toast('Le motif ne peut pas être vide','error');return;}
+    if(oldKey!==nk){delete PERMS_LEGALES[oldKey];}
+    PERMS_LEGALES[nk]={j:nj,just:nj2};
+    this.loadPerms();UI.toast('Permission enregistrée ✓');
+  },
+
+  addPerm(){
+    let k='Nouveau motif';let n=1;while(PERMS_LEGALES[k])k=`Nouveau motif ${n++}`;
+    PERMS_LEGALES[k]={j:0,just:'Justificatif requis'};
+    this.loadPerms();UI.toast('Ligne ajoutée — modifiez et sauvegardez');
+  },
+
+  delPerm(key){
+    delete PERMS_LEGALES[key];this.loadPerms();UI.toast('Supprimé');
   },
 
   async loadDirs(){
@@ -2095,7 +2281,6 @@ const Params={
   async addDir(){
     const n=prompt('Nom de la direction / service :');
     if(!n)return;
-    // Add a placeholder agent direction entry — directions are derived from agents
     UI.toast(`Direction "${n}" sera visible après affectation d'un agent.`,'warning');
   },
 
